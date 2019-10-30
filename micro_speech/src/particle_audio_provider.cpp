@@ -40,10 +40,6 @@ const size_t SAMPLES_IN_BUFFER = 512;
 static nrf_saadc_value_t buffer0[SAMPLES_IN_BUFFER];
 static nrf_saadc_value_t buffer1[SAMPLES_IN_BUFFER];
 
-// If you don't hit the setup button to stop recording, this is how long to go before turning it
-// off automatically. The limit really is only the disk space available to receive the file.
-const unsigned long MAX_RECORDING_LENGTH_MS = 5000;
-
 bool g_is_audio_initialized = false;
 // An internal buffer able to fit 16x our sample size
 constexpr int kAudioCaptureBufferSize = SAMPLES_IN_BUFFER * 16;
@@ -74,7 +70,10 @@ void CaptureSamples(nrf_saadc_value_t *buf, size_t size)
   // Read the data to the correct place in our buffer
   for (size_t i = capture_index, j = 0; i < size; i++, j++)
   {
-    g_audio_capture_buffer[i] = buf[j];
+    int16_t sample = buf[j];
+    sample -= 2047;
+    sample *= 16;
+    g_audio_capture_buffer[i] = sample;
   }
 
   // This is how we let the outside world know that new audio data has arrived.
@@ -98,12 +97,9 @@ TfLiteStatus InitAudioRecording(tflite::ErrorReporter *error_reporter)
   adc.start();
 
   // Block until we have our first audio sample
-  //while (!g_latest_audio_timestamp)
-  //{
-  //}
-
-  Serial.printlnf("First timestamp: %d", g_latest_audio_timestamp);
-  error_reporter->Report("First timestamp: %d", g_latest_audio_timestamp);
+  while (!g_latest_audio_timestamp)
+  {
+  }
 
   return kTfLiteOk;
 }
@@ -112,7 +108,6 @@ TfLiteStatus GetAudioSamples(tflite::ErrorReporter *error_reporter,
                              int start_ms, int duration_ms,
                              int *audio_samples_size, int16_t **audio_samples)
 {
-  // Set everything up to start receiving audio
   if (!g_is_audio_initialized)
   {
     TfLiteStatus init_status = InitAudioRecording(error_reporter);
@@ -121,9 +116,8 @@ TfLiteStatus GetAudioSamples(tflite::ErrorReporter *error_reporter,
       return init_status;
     }
     g_is_audio_initialized = true;
-
-    Serial.println("INIT");
   }
+
   // This next part should only be called when the main thread notices that the
   // latest audio sample data timestamp has changed, so that there's new data
   // in the capture ring buffer. The ring buffer will eventually wrap around and

@@ -17,7 +17,7 @@ limitations under the License.
 #include <Particle.h>
 
 SYSTEM_MODE(MANUAL);
-// SYSTEM_THREAD(ENABLED);
+SYSTEM_THREAD(ENABLED);
 
 #include "main_functions.h"
 

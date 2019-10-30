@@ -117,6 +117,8 @@ void setup()
 // The name of this function is important for Arduino compatibility.
 void loop()
 {
+  unsigned long before, after;
+
   // Calculate an x value to feed into the model. We compare the current
   // inference_count to the number of inferences per cycle to determine
   // our position within the range of possible x values the model was
@@ -129,7 +131,10 @@ void loop()
   input->data.f[0] = x_val;
 
   // Run inference, and report any error
+  before = millis();
   TfLiteStatus invoke_status = interpreter->Invoke();
+  after = millis();
+
   if (invoke_status != kTfLiteOk)
   {
     error_reporter->Report("Invoke failed on x_val: %f\n",

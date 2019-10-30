@@ -31,7 +31,7 @@ limitations under the License.
 #include "tensorflow/lite/version.h"
 
 SYSTEM_MODE(MANUAL);
-SYSTEM_THREAD(ENABLED);
+// SYSTEM_THREAD(ENABLED);
 
 namespace tflite
 {
@@ -139,6 +139,8 @@ void setup()
   recognizer = &static_recognizer;
 
   previous_time = 0;
+
+  error_reporter->Report("TFLite Initialized.");
 }
 
 // The name of this function is important for Arduino compatibility.
