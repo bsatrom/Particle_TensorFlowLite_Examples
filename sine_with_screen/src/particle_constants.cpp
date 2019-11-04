@@ -15,5 +15,5 @@ limitations under the License.
 
 #include "constants.h"
 
-// This is tuned so that a full cycle takes ~4 seconds on an Arduino MKRZERO.
+// This is tuned so that a full cycle takes ~4 seconds on a Particle 3rd Gen Device.
 const int kInferencesPerCycle = 1000;

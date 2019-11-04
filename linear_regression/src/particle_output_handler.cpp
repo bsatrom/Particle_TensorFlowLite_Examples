@@ -13,8 +13,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
-#include "main_functions.h"
+#include "output_handler.h"
 
-// Particle automatically calls the setup() and loop() functions in a sketch, so
-// where other systems need their own main routine in this file, it can be left
-// empty.
+#include <Particle.h>
+
+// Animates a dot across the screen to represent the current x and y values
+void HandleOutput(tflite::ErrorReporter *error_reporter, float x_value,
+                  float y_value)
+{
+  Serial.print("X Value: ");
+  Serial.println(x_value);
+  Serial.print("Y Value: ");
+  Serial.println(y_value);
+}

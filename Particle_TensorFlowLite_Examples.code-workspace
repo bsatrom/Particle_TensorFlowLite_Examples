@@ -1,7 +1,19 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"path": "hello_world"
+		},
+		{
+			"path": "micro_speech"
+		},
+		{
+			"path": "sine_with_screen"
+		},
+		{
+			"path": "linear_regression"
 		}
-	]
+	],
+	"settings": {
+		"cortex-debug.openocdPath": "${command:particle.getDebuggerOpenocdPath}"
+	}
 }
