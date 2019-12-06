@@ -54,6 +54,7 @@ const tflite::Model *model = nullptr;
 tflite::MicroInterpreter *interpreter = nullptr;
 TfLiteTensor *model_input = nullptr;
 int input_length;
+bool run_inference = false;
 
 // Create an area of memory to use for input, output, and intermediate arrays.
 // The size of this will depend on the model you're using, and may need to be
@@ -67,6 +68,8 @@ uint8_t tensor_arena[kTensorArenaSize];
 bool should_clear_buffer = false;
 } // namespace
 
+void button_clicked(system_event_t event, int param);
+
 // The name of this function is important for Arduino compatibility.
 void setup()
 {
@@ -74,6 +77,9 @@ void setup()
   // lifetime uncertainty, but since this has a trivial destructor it's okay.
   static tflite::MicroErrorReporter micro_error_reporter; // NOLINT
   error_reporter = &micro_error_reporter;
+
+  //Set-up a system event to start inference when the mode button is clicked
+  System.on(button_status, button_clicked);
 
   // Map the model into a usable data structure. This doesn't involve any
   // copying or parsing, it's a very lightweight operation.
@@ -142,8 +148,6 @@ void loop()
   bool got_data = ReadAccelerometer(error_reporter, model_input->data.f,
                                     input_length, should_clear_buffer);
 
-  //Serial.printlnf("Data: %d", got_data);
-
   // Don't try to clear the buffer again
   should_clear_buffer = false;
   // If there was no new data, wait until next time
@@ -162,4 +166,12 @@ void loop()
   should_clear_buffer = gesture_index < 3;
   // Produce an output
   HandleOutput(error_reporter, gesture_index);
+}
+
+void button_clicked(system_event_t event, int param)
+{
+  if (!run_inference)
+  {
+    run_inference = true;
+  }
 }

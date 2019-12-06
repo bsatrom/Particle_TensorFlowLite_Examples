@@ -5,7 +5,7 @@
     "files.associations": {
         "*.ino": "cpp"
     },
-    "particle.targetDevice": "ml-gesture-demo",
+    "particle.targetDevice": "e00fce6836e622751cf2e6f3",
     "particle.firmwareVersion": "1.4.2",
     "particle.targetPlatform": "xenon"
 }
